@@ -1,13 +1,17 @@
 package br.com.erico.kitanda;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,17 +24,27 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ListView lsvListaCompras;
+    private EditText edtEmail;
+    private List<Fruta> frutas;
+    private List<Fruta> compras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        frutas = getAll();
+        compras = new ArrayList<>();
+
         lsvListaCompras = (ListView) findViewById(R.id.lsvListaCompras);
         lsvListaCompras.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        ArrayAdapter adapter =
-                new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, getAll());
+//        ArrayAdapter adapter =
+//                new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, frutas);
+        FrutaAdapter adapter =
+                new FrutaAdapter(MainActivity.this, R.layout.fruta_detalhe, frutas);
         lsvListaCompras.setAdapter(adapter);
+
+        edtEmail = (EditText) findViewById(R.id.edtEmail);
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -39,8 +53,38 @@ public class MainActivity extends AppCompatActivity {
 
                 //TODO: save your shopping list
 
-                Snackbar.make(view, "Lista de compras gravada", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                String email = edtEmail.getEditableText().toString();
+                email = email.trim().toLowerCase();
+
+                if (email.isEmpty() || !email.contains("@")) {
+                    String message = "Digite um email válido";
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
+                    Integer interval = 250;
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(interval);
+
+                } else {
+                    edtEmail.setText(email);
+
+                    for (long item : lsvListaCompras.getCheckItemIds()) {
+                        int position = (int) item;
+                        compras.add(frutas.get(position));
+                    }
+
+                    Database database = new Database(MainActivity.this);
+                    database.gravarCompras(compras, email);
+                    database.close();
+
+                    String message = "Lista de compras gravadas. " + compras.size() + " items.";
+
+                    compras.clear();
+                    edtEmail.setText("");
+                    lsvListaCompras.clearChoices();
+
+                    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
             }
         });
     }

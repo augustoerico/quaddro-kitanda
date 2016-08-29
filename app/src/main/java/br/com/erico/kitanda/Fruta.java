@@ -25,14 +25,7 @@ public class Fruta {
 
     @Override
     public String toString() {
-        return "Fruta{" +
-                "codigo='" + codigo + '\'' +
-                ", preco=" + preco +
-                ", emPromocao=" + emPromocao +
-                ", nome='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", detalhe='" + detalhe + '\'' +
-                '}';
+        return this.nome;
     }
 
     public String getCodigo() {
