@@ -67,9 +67,16 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     edtEmail.setText(email);
 
+                    /*
                     for (long item : lsvListaCompras.getCheckItemIds()) {
                         int position = (int) item;
                         compras.add(frutas.get(position));
+                    }
+                    */
+                    for (Fruta fruta : frutas) {
+                        if (fruta.getQuantidade() > 0) {
+                            compras.add(fruta);
+                        }
                     }
 
                     Database database = new Database(MainActivity.this);

@@ -58,7 +58,7 @@ public class Database extends SQLiteOpenHelper {
             values.put("quantidade", 1);
             values.put("data_compra", new Date().toString());
             values.put("preco", fruta.getPreco());
-            values.put("total", fruta.getPreco() * 1);
+            values.put("total", fruta.getPreco() * fruta.getQuantidade());
             values.put("email", email);
 
             getWritableDatabase().insert(TABELA_COMPRAS, null, values);
