@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class FrutaAdapter extends ArrayAdapter<Fruta> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View row = convertView;
 
@@ -58,11 +59,43 @@ public class FrutaAdapter extends ArrayAdapter<Fruta> {
 
         }
 
-        Fruta fruta = frutas.get(position);
+        final Fruta fruta = frutas.get(position);
 
-        holder.imvFruta.setImageResource(R.drawable.abacaxi);
+        holder.imvFruta.setImageResource(fruta.getImagem());
         holder.txvNome.setText(fruta.getNome());
         holder.txvPreco.setText(String.valueOf(fruta.getPreco()));
+        holder.edtQuantidade.setText(String.valueOf(fruta.getQuantidade()));
+
+        holder.imvFruta.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String mesage = "Detalhes nutricionais:\n\n" + fruta.getDescricao();
+
+                Toast.makeText(context, mesage, Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
+
+        holder.btnMais.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fruta fruta = frutas.get(position);
+                fruta.setQuantidade(fruta.getQuantidade() + 1);
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.btnMenos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fruta fruta = frutas.get(position);
+                if (fruta.getQuantidade() > 0) {
+                    fruta.setQuantidade(fruta.getQuantidade() - 1);
+                    notifyDataSetChanged();
+                }
+            }
+        });
 
         return row;
     }
@@ -75,8 +108,6 @@ public class FrutaAdapter extends ArrayAdapter<Fruta> {
         Button btnMenos;
         Button btnMais;
         EditText edtQuantidade;
-
-
 
     }
 }

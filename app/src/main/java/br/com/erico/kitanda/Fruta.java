@@ -1,5 +1,7 @@
 package br.com.erico.kitanda;
 
+import android.content.Context;
+
 /**
  * Created by Mobile on 24/08/2016.
  */
@@ -12,7 +14,10 @@ public class Fruta {
     private String descricao;
     private String detalhe;
 
-    public Fruta(String linha) {
+    private int imagem;
+    private int quantidade;
+
+    public Fruta(String linha, Context context) {
         String[] valores = linha.split(";");
 
         codigo = valores[0];
@@ -21,6 +26,12 @@ public class Fruta {
         nome = valores[3];
         descricao = valores[4];
         detalhe = valores[5];
+
+        quantidade = 0;
+        String imageName = Biblioteca.toImageName(nome);
+        imagem = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+
+
     }
 
     @Override
@@ -74,5 +85,21 @@ public class Fruta {
 
     public void setDetalhe(String detalhe) {
         this.detalhe = detalhe;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public int getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(int imagem) {
+        this.imagem = imagem;
     }
 }

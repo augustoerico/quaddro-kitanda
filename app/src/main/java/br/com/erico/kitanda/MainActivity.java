@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             String line = new String();
             while ((line = reader.readLine()) != null) {
                 Log.d("MainActivity.addAll", line);
-                list.add(new Fruta(line));
+                list.add(new Fruta(line, MainActivity.this));
             }
 
             reader.close();
